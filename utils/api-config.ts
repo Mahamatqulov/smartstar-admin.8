@@ -42,7 +42,7 @@ API.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token noto‘g‘ri yoki muddati tugagan bo‘lsa, cookies tozalash
-      console.warn("🔒 401 - Token noto‘g‘ri yoki muddati tugagan");
+      console.warn(" 401 - Token noto‘g‘ri yoki muddati tugagan");
       cookies.remove("access_token");
       cookies.remove("user_data");
     }

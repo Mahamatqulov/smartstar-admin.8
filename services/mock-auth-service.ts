@@ -4,7 +4,7 @@ import type { LoginCredentials, AuthUser } from "./auth-service";
 // Mock user data
 const MOCK_USER: AuthUser = {
   id: "mock-1",
-  login: "admin",
+  login: "administrator",
   name: "Admin User",
   role: "admin",
   token: "mock-token-12345",
@@ -17,7 +17,10 @@ export const MockAuthService = {
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     // Check credentials (simple mock validation)
-    if (credentials.login === "admin" && credentials.password === "admin123") {
+    if (
+      credentials.login === "administrator" &&
+      credentials.password === "admin123"
+    ) {
       // Store mock token in cookie
       cookies.set("access_token", MOCK_USER.token, {
         path: "/",
