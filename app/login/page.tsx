@@ -1,75 +1,81 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { useAuth } from "@/contexts/auth-context"
-import { Lock, User, AlertCircle, Info, Wifi, WifiOff } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/auth-context";
+import { Lock, User, AlertCircle, Info, Wifi, WifiOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const { login, loading, error, clearError, user, isPreviewMode } = useAuth()
-  const router = useRouter()
-  const [networkStatus, setNetworkStatus] = useState<"online" | "offline" | "unknown">("unknown")
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const { login, loading, error, clearError, user, isPreviewMode } = useAuth();
+  const router = useRouter();
+  const [networkStatus, setNetworkStatus] = useState<
+    "online" | "offline" | "unknown"
+  >("unknown");
 
   // Set default credentials in preview mode
   useEffect(() => {
     if (isPreviewMode) {
-      setUsername("admin")
-      setPassword("admin123")
+      setUsername("admin");
+      setPassword("admin123");
     }
-  }, [isPreviewMode])
+  }, [isPreviewMode]);
 
   // Check network status
   useEffect(() => {
     const updateNetworkStatus = () => {
-      setNetworkStatus(navigator.onLine ? "online" : "offline")
-    }
+      setNetworkStatus(navigator.onLine ? "online" : "offline");
+    };
 
     // Set initial status
-    updateNetworkStatus()
+    updateNetworkStatus();
 
     // Add event listeners
-    window.addEventListener("online", updateNetworkStatus)
-    window.addEventListener("offline", updateNetworkStatus)
+    window.addEventListener("online", updateNetworkStatus);
+    window.addEventListener("offline", updateNetworkStatus);
 
     // Clean up
     return () => {
-      window.removeEventListener("online", updateNetworkStatus)
-      window.removeEventListener("offline", updateNetworkStatus)
-    }
-  }, [])
+      window.removeEventListener("online", updateNetworkStatus);
+      window.removeEventListener("offline", updateNetworkStatus);
+    };
+  }, []);
 
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      router.push("/")
+      router.push("/");
     }
-  }, [user, router])
+  }, [user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    clearError()
+    e.preventDefault();
+    clearError();
 
     // Basic validation
     if (!username.trim() || !password.trim()) {
-      return
+      return;
     }
 
     try {
-      console.log(`LoginPage: Submitting login in ${isPreviewMode ? "preview" : "production"} mode`)
+      console.log(
+        `LoginPage: Submitting login in ${
+          isPreviewMode ? "preview" : "production"
+        } mode`
+      );
 
       // Ensure we're passing the trimmed values
       await login({
         login: username.trim(),
         password: password.trim(),
-      })
+      });
     } catch (err) {
-      console.error("LoginPage: Login submission error:", err)
+      console.error("LoginPage: Login submission error:", err);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-100 to-white relative overflow-hidden">
@@ -83,8 +89,9 @@ export default function LoginPage() {
             <div className="mx-auto h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
               <span className="text-green-600 text-2xl font-bold">S</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-800">SmartStar Admin</h1>
-            <p className="text-gray-600 mt-2">Sign in to your account to continue</p>
+            <h1 className="text-2xl font-bold text-gray-800">
+              SmartStar Admin
+            </h1>
           </div>
 
           {/* Form */}
@@ -96,39 +103,12 @@ export default function LoginPage() {
               </div>
             )}
 
-            {isPreviewMode && (
-              <div className="mb-4 p-3 bg-blue-50 border-l-4 border-blue-500 text-blue-700 text-sm rounded flex items-start">
-                <Info className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-medium">Preview Mode</p>
-                  <p>Using mock authentication. Default credentials are pre-filled.</p>
-                </div>
-              </div>
-            )}
-
-            {networkStatus !== "unknown" && (
-              <div
-                className={`mb-4 p-3 ${networkStatus === "online" ? "bg-green-50 border-green-500 text-green-700" : "bg-amber-50 border-amber-500 text-amber-700"} border-l-4 text-sm rounded flex items-start`}
-              >
-                {networkStatus === "online" ? (
-                  <Wifi className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
-                ) : (
-                  <WifiOff className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
-                )}
-                <div>
-                  <p className="font-medium">{networkStatus === "online" ? "Online Mode" : "Offline Mode"}</p>
-                  <p>
-                    {networkStatus === "online"
-                      ? "Connected to the server."
-                      : "Using local data. Some features may be limited."}
-                  </p>
-                </div>
-              </div>
-            )}
-
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label htmlFor="username" className="block text-gray-700 text-sm font-medium mb-2">
+                <label
+                  htmlFor="username"
+                  className="block text-gray-700 text-sm font-medium mb-2"
+                >
                   Login
                 </label>
                 <div className="relative">
@@ -139,7 +119,6 @@ export default function LoginPage() {
                     id="username"
                     name="username"
                     type="text"
-                    value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     placeholder="Enter your username"
@@ -149,7 +128,10 @@ export default function LoginPage() {
               </div>
 
               <div className="mb-6">
-                <label htmlFor="password" className="block text-gray-700 text-sm font-medium mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-gray-700 text-sm font-medium mb-2"
+                >
                   Password
                 </label>
                 <div className="relative">
@@ -160,7 +142,6 @@ export default function LoginPage() {
                     id="password"
                     name="password"
                     type="password"
-                    value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     placeholder="Enter your password"
@@ -204,15 +185,8 @@ export default function LoginPage() {
               </button>
             </form>
           </div>
-
-          {/* Demo credentials */}
-          {isPreviewMode && (
-            <div className="px-8 py-4 bg-gray-50 border-t border-gray-100 text-center text-sm text-gray-600">
-              <p>Demo credentials: login: admin, password: admin123</p>
-            </div>
-          )}
         </div>
       </div>
     </div>
-  )
+  );
 }
